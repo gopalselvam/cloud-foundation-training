@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/**
 module "project_iam_bindings" {
   source   = "terraform-google-modules/iam/google//modules/projects_iam"
   version  = "~> 6.3.1"
@@ -40,5 +40,6 @@ module "project_iam_bindings" {
 }
 
 locals {
-  iam_member = "serviceAccount:sa-cft-training@${var.project_id}.iam.gserviceaccount.com"
+  iam_member = "serviceAccount:sa-terra@${var.project_id}.iam.gserviceaccount.com"
 }
+*/

@@ -20,7 +20,7 @@ variable "project_id" {
 
 variable "region" {
   description = "GCP Region"
-  default     = "us-east1"
+  default     = "us-central1"
 }
 
 variable "target_tags" {

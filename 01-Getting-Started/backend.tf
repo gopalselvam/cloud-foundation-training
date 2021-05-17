@@ -17,11 +17,9 @@
 # Task 5: Add GCS bucket for remote state
 # https://www.terraform.io/docs/providers/google/r/storage_bucket.html
 
-/**
 terraform {
   backend "gcs" {
-    bucket  = "" # GCS bucket for Terraform Remote State
+    bucket  = "terra-lab-state-gopal-e0d0e91a" 
     prefix  = "terraform/state/01/"
   }
 }
-*/

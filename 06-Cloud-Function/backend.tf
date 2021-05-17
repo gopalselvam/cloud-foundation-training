@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/**
 terraform {
   backend "gcs" {
     bucket = "" # GCS bucket for Terraform Remote State
     prefix = "terraform/state/06/"
   }
 }
+*/

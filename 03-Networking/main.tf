@@ -20,38 +20,38 @@ provider "google" {
   version = "~> 3.39.0"
 }
 
-/**
- * Task 1: Add Network ("network")
- * - source: "terraform-google-modules/network/google"
- * - version: "~> 2.5.0"
- * - project_id: module.project_iam_bindings.projects[0]
- * - network_name: "lab03-vpc"
- * - routing_mode: "GLOBAL"
- * - subnets:
- *   - subnet_name: "lab03-subnet-01"
- *   - subnet_ip: "10.0.10.0/24"
- *   - subnet_region: var.region
- *
- * Reference - https://github.com/terraform-google-modules/terraform-google-network
- *
- */
 module "network" {
+    source  = "terraform-google-modules/network/google"
+    version = "~> 2.5.0"
+    project_id   = var.project_id
+    network_name = "lab03-vpc"
+    routing_mode = "GLOBAL"
+    subnets = [
+        {
+            subnet_name           = "lab03-subnet-01"
+            subnet_ip             = "10.10.10.0/24"
+            subnet_region         = var.region
+        }
+    ]
+}
 
+module "cloud_nat" {
+  source     = "terraform-google-modules/cloud-nat/google"
+  version    = "~> 1.3.0"
+  project_id = var.project_id
+  region     = var.region
+  create_router = "true"
+  router     = "lab03-router"
+  network = module.network.network_name
 }
 
 /**
- * Task 2: Add Cloud NAT Instance ("cloud_nat")
- * - source: "terraform-google-modules/cloud-nat/google"
- * - version: "~> 1.3.0"
- * - project_id: module.project_iam_bindings.projects[0]
- * - region: var.region
- * - create_router: true
- * - router: "lab03-router"
- * - network: refer to network_name created in Task 1 - module.network.network_name
- *
- * Reference - https://github.com/terraform-google-modules/terraform-google-cloud-nat
- *
- */
-module "cloud_nat" {
-
+module "net-firewall" {
+  source                  = "terraform-google-modules/network/google//modules/fabric-net-firewall"
+  version = "1.1.0"
+  project_id              = module.project_iam_bindings.projects[0]
+  network                 = "lab03-vpc"
+  internal_ranges_enabled = true
+  internal_ranges         = ["10.10.10.0/24"]
 }
+*/

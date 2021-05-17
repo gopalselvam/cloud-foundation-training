@@ -39,8 +39,10 @@ resource "google_service_account" "instance_group" {
  * Reference - https://www.terraform.io/docs/providers/google/r/google_service_account_iam.html
  *
  */
-resource "" "service_account_user" {
-
+resource "google_service_account_iam_member" "service_account_user" {
+  service_account_id = google_service_account.instance_group.name
+  role = "roles/iam.serviceAccountUser"
+  member = "serviceAccount:sa-terra@${var.project_id}.iam.gserviceaccount.com"
 }
 
 /**
@@ -61,7 +63,18 @@ resource "" "service_account_user" {
  *
  */
 module "instance_template" {
-
+ source = "terraform-google-modules/vm/google//modules/instance_template"
+  version = "~> 4.0.0"
+  project_id = module.project_iam_bindings.projects[0]
+  subnetwork = module.network.subnets_self_links[0]
+  source_image_family = "debian-9"
+  source_image_project = "debian-cloud"
+  startup_script = data.local_file.instance_startup_script.content
+  service_account = {
+    email  = google_service_account.instance_group.email
+    scopes = ["cloud-platform"]
+    tags   = ["allow-load-balancer"]
+  }
 }
 
 /**
@@ -81,5 +94,17 @@ module "instance_template" {
  *
  */
 module "managed_instance_group" {
-
+ source = "terraform-google-modules/vm/google//modules/mig"
+  version = "~> 4.0.0"
+  project_id = module.project_iam_bindings.projects[0]
+  region = "us-central1"
+  target_size = 2
+  hostname = "lab04-managed-instance"
+  instance_template = module.instance_template.self_link
+  named_ports = [
+      {
+    name = "http"
+    port = "80"
+      }
+  ]
 }

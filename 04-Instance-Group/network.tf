@@ -24,7 +24,7 @@ module "network" {
     {
       subnet_name   = "lab04-subnet-01"
       subnet_ip     = "10.10.10.0/24"
-      subnet_region = var.region
+      subnet_region = "us-central1"
     }
   ]
 }
@@ -33,7 +33,7 @@ module "cloud_nat" {
   source        = "terraform-google-modules/cloud-nat/google"
   version       = "~> 1.3.0"
   project_id    = module.project_iam_bindings.projects[0]
-  region        = var.region
+  region        = "us-central1"
   create_router = true
   router        = "lab04-router"
   network       = module.network.network_name

@@ -40,5 +40,36 @@ provider "google" {
  *
  */
 module "project_iam_bindings" {
+  source   = "terraform-google-modules/iam/google//modules/projects_iam"
+  version  = "~> 6.3.1"
+  projects = [var.project_id]
+  mode     = "additive"
 
+  bindings = {
+    "roles/compute.viewer" = [
+      local.iam_member,
+    ]
+    "roles/compute.securityAdmin" = [
+      local.iam_member,
+    ]
+    "roles/container.clusterAdmin" = [
+      local.iam_member,
+    ]
+    "roles/container.developer" = [
+      local.iam_member,
+    ]
+    "roles/iam.serviceAccountAdmin" = [
+      local.iam_member,
+    ]
+    "roles/iam.serviceAccountUser" = [
+      local.iam_member,
+    ]
+    "roles/resourcemanager.projectIamAdmin" = [
+      local.iam_member,
+    ]
+  }
+}
+
+locals {
+  iam_member = "serviceAccount:sa-terra@${var.project_id}.iam.gserviceaccount.com"
 }
